@@ -33,6 +33,28 @@ class ChatService {
     const messageId = await MessageRepository.saveMessage(message);
     return { id: messageId, ...message };
   }
+
+  async createGroup(req, res) {
+    const { name, members, createdBy } = req.body;
+
+    try {
+      const group = await ChatService.createGroup(name, members, createdBy);
+      res.status(201).json(group);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create group" });
+    }
+  }
+
+  async forwardMessage(req, res) {
+    const { senderId, receiverId, messageId } = req.body;
+
+    try {
+      const message = await ChatService.forwardMessage(senderId, receiverId, messageId);
+      res.status(200).json(message);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to forward message" });
+    }
+  }
 }
 
 module.exports = new ChatService();

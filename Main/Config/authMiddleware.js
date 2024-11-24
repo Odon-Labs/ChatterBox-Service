@@ -1,17 +1,18 @@
-const admin = require("firebase-admin");
+const { verifyToken } = require("../main/config/jwt");
 
-const authMiddleware = async (req, res, next) => {
+const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
+
   if (!token) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
   try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    req.user = decodedToken;
+    const decoded = verifyToken(token);
+    req.userId = decoded.userId;
     next();
-  } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
+  } catch (err) {
+    res.status(403).json({ error: "Forbidden" });
   }
 };
 
