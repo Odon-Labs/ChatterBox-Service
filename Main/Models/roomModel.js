@@ -5,6 +5,10 @@ const roomModelSchema = new Schema({
     type: String,
     require: false,
   },
+  isPrivate: {
+    type: Boolean,
+    require: false,
+  },
   isGroup: {
     type: Boolean,
     require: true
