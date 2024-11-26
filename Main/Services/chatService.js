@@ -1,60 +1,61 @@
-const { bucket } = require("../main/config/firebase");
-const MessageRepository = require("../repositories/messageRepository");
-const Message = require("../main/models/messageModel");
-const { v4: uuidv4 } = require("uuid");
 
-class ChatService {
-  async uploadImage(file) {
-    const fileName = `${uuidv4()}-${file.originalname}`;
-    const blob = bucket.file(fileName);
+// const { bucket } = require("../main/config/firebase");
+// const MessageRepository = require("../repositories/messageRepository");
+// const Message = require("../main/models/messageModel");
+// const { v4: uuidv4 } = require("uuid");
 
-    const blobStream = blob.createWriteStream({
-      metadata: {
-        contentType: file.mimetype,
-      },
-    });
+// class ChatService {
+//   async uploadImage(file) {
+//     const fileName = `${uuidv4()}-${file.originalname}`;
+//     const blob = bucket.file(fileName);
 
-    return new Promise((resolve, reject) => {
-      blobStream.on("finish", async () => {
-        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
-        resolve(publicUrl);
-      });
+//     const blobStream = blob.createWriteStream({
+//       metadata: {
+//         contentType: file.mimetype,
+//       },
+//     });
 
-      blobStream.on("error", (err) => {
-        reject(err);
-      });
+//     return new Promise((resolve, reject) => {
+//       blobStream.on("finish", async () => {
+//         const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+//         resolve(publicUrl);
+//       });
 
-      blobStream.end(file.buffer);
-    });
-  }
+//       blobStream.on("error", (err) => {
+//         reject(err);
+//       });
 
-  async sendMessage(senderId, receiverId, groupId, text, imageUrl) {
-    const message = new Message(senderId, receiverId, text, new Date().toISOString(), groupId, imageUrl);
-    const messageId = await MessageRepository.saveMessage(message);
-    return { id: messageId, ...message };
-  }
+//       blobStream.end(file.buffer);
+//     });
+//   }
 
-  async createGroup(req, res) {
-    const { name, members, createdBy } = req.body;
+//   async sendMessage(senderId, receiverId, groupId, text, imageUrl) {
+//     const message = new Message(senderId, receiverId, text, new Date().toISOString(), groupId, imageUrl);
+//     const messageId = await MessageRepository.saveMessage(message);
+//     return { id: messageId, ...message };
+//   }
 
-    try {
-      const group = await ChatService.createGroup(name, members, createdBy);
-      res.status(201).json(group);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create group" });
-    }
-  }
+//   async createGroup(req, res) {
+//     const { name, members, createdBy } = req.body;
 
-  async forwardMessage(req, res) {
-    const { senderId, receiverId, messageId } = req.body;
+//     try {
+//       const group = await ChatService.createGroup(name, members, createdBy);
+//       res.status(201).json(group);
+//     } catch (error) {
+//       res.status(500).json({ error: "Failed to create group" });
+//     }
+//   }
 
-    try {
-      const message = await ChatService.forwardMessage(senderId, receiverId, messageId);
-      res.status(200).json(message);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to forward message" });
-    }
-  }
-}
+//   async forwardMessage(req, res) {
+//     const { senderId, receiverId, messageId } = req.body;
 
-module.exports = new ChatService();
+//     try {
+//       const message = await ChatService.forwardMessage(senderId, receiverId, messageId);
+//       res.status(200).json(message);
+//     } catch (error) {
+//       res.status(500).json({ error: "Failed to forward message" });
+//     }
+//   }
+// }
+
+// module.exports = new ChatService();
