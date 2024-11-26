@@ -1,41 +1,57 @@
-import mongoose, {Schema} from 'mongoose'
+import mongoose, { Schema } from "mongoose";
 
-const roomSchema = new Schema({
-    tweetMessage: {
-        type:String,
-        required:true
+const roomModelSchema = new Schema({
+  roomName: {
+    type: String,
+    require: false,
+  },
+  isGroup: {
+    type: Boolean,
+    require: true
+  },
+  roomDescription: {
+    type: String,
+    require: false
+  },
+  roomPicture: {
+    data: Buffer,
+    contentType: String,
+  },
+  dateCreation: {
+    type: Date,
+    default: Date.now(),
+  },
+  createdBy: {
+    type:mongoose.Types.ObjectId,
+    ref:'Users'
+  }, 
+  isAdmin: {
+    type: Boolean,
+    require: true,
+  },
+  participantDetail: [
+    {
+      type: mongoose.Types.ObjectId,
+      default: [],
+      ref: "Users",
     },
-    tweetPublishedDate:{
-        type:Date,
-        default:Date.now()
-    },
-    tagDetail:{
-        type:String,
-        required:true
-    },
-    usersLikeTweet:{
-        type:Number,
-        default:0
-    },
-    parentTweet:{
-        type:Boolean,
-        default:false
-    },
-    photoAttachedWithTweet:{
-        data:Buffer,
-        contentType:String
-    },
-    replyOnTweet:[
-        {
-            type:mongoose.Types.ObjectId,
-            default:[],
-            ref:'Tweets'
-        }
-    ],
-    userId:{
-        type:mongoose.Types.ObjectId,
-        ref:'Users'
-    }
-})
+  ]
+});
 
-export default mongoose.model('Tweets',tweetSchema);
+export default mongoose.model("Room", roomModelSchema);
+
+
+// photos: [
+//     {
+//       data: Buffer,
+//       default:[],
+//       contentType: String,
+//     },
+//   ],
+//   replyOnTweet: [
+//     {
+//       type: mongoose.Types.ObjectId,
+//       default: [],
+//       ref: "Tweets",
+//     },
+//   ]
