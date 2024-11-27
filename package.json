@@ -2,6 +2,7 @@
   "name": "chatterbox-service",
   "version": "1.0.0",
   "description": "Chat Application",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "test": "jest",
